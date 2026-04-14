@@ -1,0 +1,7 @@
+TRYB=0
+ALGORYTM=0
+SCIEZKA_DANYCH=dane/macierze_testowe/matrix_11x11.atsp
+UZYJ_UB=1
+ROZMIAR_N=11
+POWTORZENIA=1
+
