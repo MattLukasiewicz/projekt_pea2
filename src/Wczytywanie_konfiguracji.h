@@ -5,7 +5,7 @@ struct Konfiguracja {
     int tryb;             // 0: pojedynczy, 1: katalog, 2: TSPLIB, 3: generator
     int algorytm;         // 0: BFS, 1: DFS, 2: BestFirst
     std::string sciezka;
-    int uzyjUB;           // 1: licz gorne ograniczenie, 0: brak
+    int uzyjUB;           // 0: brak, 1: NN, 2: RNN
     int rozmiarN;
     int powtorzenia;
 

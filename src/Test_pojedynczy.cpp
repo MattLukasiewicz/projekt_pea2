@@ -6,7 +6,7 @@
 
 #include "Wczytywanie_macierzy.h"
 #include "Algorytm_BnB.h"
-#include "Algorytm_NN.h"
+#include "Algorytm_NN_i_RNN.h"
 #include "Stoper.h"
 
 using namespace std;
@@ -67,7 +67,11 @@ bool wykonajTestPojedynczy(const Konfiguracja& konf) {
 
     int poczatkoweUB = INF;
     if (konf.uzyjUB == 1) {
-        poczatkoweUB = rozwiazAlgorytm_NN(macierz);
+        poczatkoweUB = algorytm_nn(macierz);
+        cout << "Poczatkowe Gorne Ograniczenie (UB) z NN: " << poczatkoweUB << "\n";
+    } else if (konf.uzyjUB == 2) {
+        poczatkoweUB = algorytm_rnn(macierz);
+        cout << "Poczatkowe Gorne Ograniczenie (UB) z RNN: " << poczatkoweUB << "\n";
     }
 
     Stoper stoper;

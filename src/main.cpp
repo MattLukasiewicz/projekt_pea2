@@ -9,6 +9,14 @@ int main() {
     cout << "Wczytywanie konfiguracji...\n";
     Konfiguracja konf = Wczytywanie_Konfiguracji::wczytajKonfiguracje("config.txt");
 
+    if (konf.uzyjUB == 1) {
+        cout << "Tryb UB: NN (UZYJ_UB=1)\n";
+    } else if (konf.uzyjUB == 2) {
+        cout << "Tryb UB: RNN (UZYJ_UB=2)\n";
+    } else {
+        cout << "Tryb UB: brak dodatkowego ograniczenia (UZYJ_UB=0)\n";
+    }
+
     switch (konf.tryb) {
         case 0: {
             cout << "TRYB 0: Pojedyncza macierz.\n";
