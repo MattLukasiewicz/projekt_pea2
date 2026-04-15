@@ -8,7 +8,7 @@ Konfiguracja Wczytywanie_Konfiguracji::wczytajKonfiguracje(const string& nazwaPl
     Konfiguracja konf = {0, 0, "", 0, 0, 0, "dane/generowane/", 0, 5, 20, 20, 1, 1000};
     ifstream plik(nazwaPliku);
     if (!plik.is_open()) {
-        cerr << "Blad wczytywania pliku konfiguracyjnego: " << nazwaPliku << "\n";
+        cerr << "Wystapil blad: wczytywanie pliku konfiguracyjnego: " << nazwaPliku << "\n";
         return konf;
     }
 

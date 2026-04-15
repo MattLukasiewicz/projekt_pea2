@@ -13,7 +13,7 @@ namespace fs = filesystem;
 static void zapiszMacierzDoPliku(const string& sciezka, const vector<vector<int>>& macierz, int rozmiar) {
     ofstream plik(sciezka);
     if (!plik.is_open()) {
-        cerr << "Wykryto blad, nie mozna utworzyc pliku: " << sciezka << "\n";
+        cerr << "Wystapil blad: nie mozna utworzyc pliku: " << sciezka << "\n";
         return;
     }
 

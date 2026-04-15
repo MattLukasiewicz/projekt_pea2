@@ -9,7 +9,7 @@ using namespace std;
 Macierz Wczytywanie_Macierzy::wczytajMacierz(const string& nazwaPliku) {
     ifstream plik(nazwaPliku);
     if (!plik.is_open()) {
-        cerr << "Blad wczytywania macierzy: " << nazwaPliku << "\n";
+        cerr << "Wystapil blad: wczytywanie macierzy: " << nazwaPliku << "\n";
         return Macierz(0);
     }
 

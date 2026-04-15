@@ -21,15 +21,6 @@ static string pobierzNazweAlgorytmu(int algorytm) {
     }
 }
 
-static int uruchomWybranyAlgorytmBnB(const Konfiguracja& konf, const Macierz& macierz, int poczatkoweUB) {
-    switch (konf.algorytm) {
-        case 0: return rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
-        case 1: return rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
-        case 2: return rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
-        default: return -1;
-    }
-}
-
 static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInstancji, int rozmiar, double czasMs) {
     fs::create_directories("wyniki");
 
@@ -38,7 +29,7 @@ static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInst
 
     ofstream plik(sciezkaPliku, ios::app);
     if (!plik.is_open()) {
-        cerr << "Blad: nie mozna otworzyc pliku wynikow: " << sciezkaPliku << "\n";
+        cerr << "Wystapil blad: nie mozna otworzyc pliku wynikow: " << sciezkaPliku << "\n";
         return;
     }
 
@@ -61,36 +52,49 @@ static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInst
 bool wykonajTestPojedynczy(const Konfiguracja& konf) {
     Macierz macierz = Wczytywanie_Macierzy::wczytajMacierz(konf.sciezka);
     if (macierz.rozmiar == 0) {
-        cerr << "Blad: nie udalo sie wczytac macierzy z: " << konf.sciezka << "\n";
+        cerr << "Wystapil blad: nie udalo sie wczytac macierzy z: " << konf.sciezka << "\n";
         return false;
     }
 
     int poczatkoweUB = INF;
     if (konf.uzyjUB == 1) {
         poczatkoweUB = algorytm_nn(macierz);
-        cout << "Poczatkowe Gorne Ograniczenie (UB) z NN: " << poczatkoweUB << "\n";
+        cout << "Poczatkowe UB z NN: " << poczatkoweUB << "\n";
     } else if (konf.uzyjUB == 2) {
         poczatkoweUB = algorytm_rnn(macierz);
-        cout << "Poczatkowe Gorne Ograniczenie (UB) z RNN: " << poczatkoweUB << "\n";
+        cout << "Poczatkowe UB z RNN: " << poczatkoweUB << "\n";
     }
 
-    Stoper stoper;
-    stoper.start();
-    int wynik = uruchomWybranyAlgorytmBnB(konf, macierz, poczatkoweUB);
-    stoper.stop();
+    int wynik = -1;
+    double czasMs = 0.0;
 
-    if (wynik == -1) {
-        cerr << "Blad: Nieznany algorytm!\n";
+    if (konf.algorytm == 0) {
+        Stoper stoper;
+        stoper.start();
+        wynik = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
+        stoper.stop();
+        czasMs = stoper.pobierzCzasMs();
+    } else if (konf.algorytm == 1) {
+        Stoper stoper;
+        stoper.start();
+        wynik = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
+        stoper.stop();
+        czasMs = stoper.pobierzCzasMs();
+    } else if (konf.algorytm == 2) {
+        Stoper stoper;
+        stoper.start();
+        wynik = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
+        stoper.stop();
+        czasMs = stoper.pobierzCzasMs();
+    } else {
+        cerr << "Wystapil blad: nieznany algorytm!\n";
         return false;
     }
 
-    double czasMs = stoper.pobierzCzasMs();
-
-    cout << "Wyliczony przez B&B minimalny koszt: " << wynik << "\n";
+    cout << "Minimalny koszt: " << wynik << "\n";
     cout << "Czas obliczen: " << czasMs << " ms\n";
 
     zapiszWynikDoCsv(konf, konf.sciezka, macierz.rozmiar, czasMs);
-    cout << "Wynik zapisany do: wyniki/Wyniki_pojedyncze.csv\n";
 
     return true;
 }

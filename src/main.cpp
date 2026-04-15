@@ -2,6 +2,7 @@
 #include "Wczytywanie_konfiguracji.h"
 #include "Generator_macierzy.h"
 #include "Test_pojedynczy.h"
+#include "Testy_Katalogow_Macierzy.h"
 
 using namespace std;
 
@@ -25,7 +26,7 @@ int main() {
         }
         case 1: {
             cout << "TRYB 1: Testy masowe w katalogu.\n";
-            wykonajTestPojedynczy(konf);
+            uruchomTestyDlaKatalogu(konf);
             break;
         }
         case 2: {
@@ -39,7 +40,7 @@ int main() {
             break;
         }
         default:
-            cerr << "Blad: Nieznany tryb uruchomienia!\n";
+            cerr << "Wystapil blad: nieznany tryb uruchomienia!\n";
             break;
     }
 
