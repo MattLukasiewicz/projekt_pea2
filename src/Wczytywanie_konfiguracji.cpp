@@ -5,7 +5,7 @@
 using namespace std;
 
 Konfiguracja Wczytywanie_Konfiguracji::wczytajKonfiguracje(const string& nazwaPliku) {
-    Konfiguracja konf = {0, 0, "", 0, 0, 0, "dane/generowane/", 0, 5, 20, 20, 1, 1000};
+    Konfiguracja konf = {0, 0, "", 0, 0, 0, 1, "dane/generowane/", 0, 5, 20, 20, 1, 1000};
     ifstream plik(nazwaPliku);
     if (!plik.is_open()) {
         cerr << "Wystapil blad: wczytywanie pliku konfiguracyjnego: " << nazwaPliku << "\n";
@@ -26,6 +26,7 @@ Konfiguracja Wczytywanie_Konfiguracji::wczytajKonfiguracje(const string& nazwaPl
             else if (klucz == "UZYJ_UB") konf.uzyjUB = stoi(wartosc);
             else if (klucz == "ROZMIAR_N") konf.rozmiarN = stoi(wartosc);
             else if (klucz == "POWTORZENIA") konf.powtorzenia = stoi(wartosc);
+            else if (klucz == "POKAZ_POSTEP") konf.pokazPostep = stoi(wartosc);
             else if (klucz == "GEN_KATALOG_WYJSCIOWY") konf.genFolderDanych = wartosc;
             else if (klucz == "GEN_TYP") konf.genTyp = stoi(wartosc);
             else if (klucz == "GEN_ROZMIAR_MIN") konf.genRozmiarMin = stoi(wartosc);

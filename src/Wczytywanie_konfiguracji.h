@@ -8,6 +8,7 @@ struct Konfiguracja {
     int uzyjUB;           // 0: brak, 1: NN, 2: RNN
     int rozmiarN;
     int powtorzenia;
+    int pokazPostep;      // 0: nie, 1: tak
 
     // Parametry generatora (tryb 3)
     std::string genFolderDanych; // np. dane/generowane/

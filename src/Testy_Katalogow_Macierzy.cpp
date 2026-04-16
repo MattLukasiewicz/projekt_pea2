@@ -7,6 +7,7 @@
 
 #include "Algorytm_BnB.h"
 #include "Algorytm_NN_i_RNN.h"
+#include "Pasek_postepu.h"
 #include "Stoper.h"
 #include "Wczytywanie_macierzy.h"
 
@@ -19,6 +20,14 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
         cerr << "Wystapil blad: podana sciezka nie jest katalogiem: " << konf.sciezka << "\n";
         return;
     }
+
+    long long laczniePlikow = 0;
+    for (const auto& wpis : fs::directory_iterator(katalog)) {
+        if (wpis.is_regular_file()) {
+            ++laczniePlikow;
+        }
+    }
+    long long wykonanePliki = 0;
 
     string nazwaAlgorytmu = "Nieznany";
     if (konf.algorytm == 0) nazwaAlgorytmu = "BFS";
@@ -45,6 +54,8 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
     int iloscInstancji = 0;
     int rozmiarInstancji = konf.rozmiarN;
 
+    pokazPostep(konf.pokazPostep == 1, wykonanePliki, laczniePlikow, "Testowanie macierzy");
+
     for (const auto& wpis : fs::directory_iterator(katalog)) {
         if (!wpis.is_regular_file()) {
             continue;
@@ -54,6 +65,8 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
         Macierz macierz = Wczytywanie_Macierzy::wczytajMacierz(sciezkaPliku.string());
         if (macierz.rozmiar == 0) {
             cerr << "Wystapil blad: nie udalo sie wczytac macierzy z: " << sciezkaPliku.string() << "\n";
+            wykonanePliki++;
+            pokazPostep(konf.pokazPostep == 1, wykonanePliki, laczniePlikow, "Testowanie macierzy");
             continue;
         }
 
@@ -83,6 +96,9 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
             stoper.stop();
             czasMs = stoper.pobierzCzasMs();
         }
+
+        wykonanePliki++;
+        pokazPostep(konf.pokazPostep == 1, wykonanePliki, laczniePlikow, "Testowanie macierzy");
 
         sumaCzasow += czasMs;
         iloscInstancji++;
