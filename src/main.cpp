@@ -10,6 +10,13 @@ int main() {
     cout << "Wczytywanie konfiguracji...\n";
     Konfiguracja konf = Wczytywanie_Konfiguracji::wczytajKonfiguracje("config.txt");
 
+    auto pobierzNazweAlgorytmu = [](int algorytm) {
+        if (algorytm == 0) return "BFS";
+        if (algorytm == 1) return "DFS";
+        if (algorytm == 2) return "BestFirst";
+        return "Nieznany";
+    };
+
     if (konf.uzyjUB == 1) {
         cout << "Tryb UB: NN (UZYJ_UB=1)\n";
     } else if (konf.uzyjUB == 2) {
@@ -21,6 +28,8 @@ int main() {
     switch (konf.tryb) {
         case 0: {
             cout << "TRYB 0: Pojedyncza macierz.\n";
+            cout << "Macierz: " << konf.sciezka << "\n";
+            cout << "Algorytm: " << pobierzNazweAlgorytmu(konf.algorytm) << "\n";
             wykonajTestPojedynczy(konf);
             break;
         }

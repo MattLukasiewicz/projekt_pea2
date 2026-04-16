@@ -6,8 +6,7 @@
 using namespace std;
 
 int rozwiazAlgorytm_BnB_DFS(const Macierz& macierz, int poczatkoweUB) {
-    cout << "[B&B] Uruchamiam przeszukiwanie W glab (DFS)...\n";
-    
+
     int n = macierz.rozmiar;
     int gorneOgraniczenie = poczatkoweUB;
 

@@ -1,7 +1,7 @@
 TRYB=0
 ALGORYTM=0
-SCIEZKA_DANYCH=dane/macierze_testowe/matrix_11x11.atsp
-UZYJ_UB=1
-ROZMIAR_N=11
+SCIEZKA_DANYCH=dane/generowane/atsp/15/macierz_15x15_1.txt
+UZYJ_UB=0
+ROZMIAR_N=15
 POWTORZENIA=1
 

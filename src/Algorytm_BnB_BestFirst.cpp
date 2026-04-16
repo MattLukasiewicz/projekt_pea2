@@ -13,8 +13,7 @@ struct PorownajKoszty {
 };
 
 int rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB) {
-    cout << "[B&B] Uruchamiam przeszukiwanie Najnizszego Kosztu (Best-First)...\n";
-    
+
     int n = macierz.rozmiar;
     int gorneOgraniczenie = poczatkoweUB;
 

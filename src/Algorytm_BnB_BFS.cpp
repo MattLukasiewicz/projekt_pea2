@@ -6,8 +6,7 @@
 using namespace std;
 
 int rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int poczatkoweUB) {
-    cout << "[B&B] Uruchamiam przeszukiwanie Wszerz (BFS)...\n";
-    
+
     int n = macierz.rozmiar;
     int gorneOgraniczenie = poczatkoweUB;
 
