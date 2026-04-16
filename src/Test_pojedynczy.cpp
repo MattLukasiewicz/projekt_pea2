@@ -21,7 +21,12 @@ static string pobierzNazweAlgorytmu(int algorytm) {
     }
 }
 
-static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInstancji, int rozmiar, double czasMs) {
+static double obliczPamiecMB(size_t maxWezlow) {
+    const double bajtyNaMB = 1024.0 * 1024.0;
+    return (static_cast<double>(maxWezlow) * static_cast<double>(sizeof(Wezel))) / bajtyNaMB;
+}
+
+static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInstancji, int rozmiar, int wynik, double czasMs, size_t maxWezlow, double pamiecMB) {
     fs::create_directories("wyniki");
 
     string sciezkaPliku = "wyniki/Wyniki_pojedyncze.csv";
@@ -34,7 +39,7 @@ static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInst
     }
 
     if (nowyPlik) {
-        plik << "NazwaPliku;Rozmiar;Algorytm;Czas_ms\n";
+        plik << "Plik;Rozmiar;Algorytm;Wynik;Czas_ms;Max_Wezlow;Pamiec_MB\n";
     }
 
     string nazwaPliku = fs::path(sciezkaInstancji).filename().string();
@@ -46,7 +51,10 @@ static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInst
          << nazwaPliku << ";"
          << rozmiar << ";"
          << pobierzNazweAlgorytmu(konf.algorytm) << ";"
-         << czasMs << "\n";
+         << wynik << ";"
+            << czasMs << ";"
+            << maxWezlow << ";"
+         << setprecision(6) << pamiecMB << "\n";
 }
 
 bool wykonajTestPojedynczy(const Konfiguracja& konf) {
@@ -65,25 +73,25 @@ bool wykonajTestPojedynczy(const Konfiguracja& konf) {
         cout << "Poczatkowe UB z RNN: " << poczatkoweUB << "\n";
     }
 
-    int wynik = -1;
+    WynikBnB wynikBnB{-1, 0};
     double czasMs = 0.0;
 
     if (konf.algorytm == 0) {
         Stoper stoper;
         stoper.start();
-        wynik = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
+        wynikBnB = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
         stoper.stop();
         czasMs = stoper.pobierzCzasMs();
     } else if (konf.algorytm == 1) {
         Stoper stoper;
         stoper.start();
-        wynik = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
+        wynikBnB = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
         stoper.stop();
         czasMs = stoper.pobierzCzasMs();
     } else if (konf.algorytm == 2) {
         Stoper stoper;
         stoper.start();
-        wynik = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
+        wynikBnB = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
         stoper.stop();
         czasMs = stoper.pobierzCzasMs();
     } else {
@@ -91,10 +99,13 @@ bool wykonajTestPojedynczy(const Konfiguracja& konf) {
         return false;
     }
 
-    cout << "Minimalny koszt: " << wynik << "\n";
+    cout << "Minimalny koszt: " << wynikBnB.koszt << "\n";
     cout << "Czas obliczen: " << czasMs << " ms\n";
+    double pamiecMB = obliczPamiecMB(wynikBnB.maxWezlow);
+    cout << "Max wezlow w kontenerze: " << wynikBnB.maxWezlow << "\n";
+    cout << "Szacowana pamiec kontenera: " << fixed << setprecision(6) << pamiecMB << " MB\n";
 
-    zapiszWynikDoCsv(konf, konf.sciezka, macierz.rozmiar, czasMs);
+    zapiszWynikDoCsv(konf, konf.sciezka, macierz.rozmiar, wynikBnB.koszt, czasMs, wynikBnB.maxWezlow, pamiecMB);
 
     return true;
 }

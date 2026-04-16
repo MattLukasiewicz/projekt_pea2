@@ -14,6 +14,11 @@
 using namespace std;
 namespace fs = filesystem;
 
+static double obliczPamiecMB(size_t maxWezlow) {
+    const double bajtyNaMB = 1024.0 * 1024.0;
+    return (static_cast<double>(maxWezlow) * static_cast<double>(sizeof(Wezel))) / bajtyNaMB;
+}
+
 void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
     fs::path katalog = konf.sciezka;
     if (!fs::exists(katalog) || !fs::is_directory(katalog)) {
@@ -50,11 +55,15 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
         return;
     }
 
+    const bool czyPokazacPostep = (konf.pokazPostep == 1);
+
     double sumaCzasow = 0.0;
     int iloscInstancji = 0;
     int rozmiarInstancji = konf.rozmiarN;
+    size_t sumaMaxWezlow = 0;
+    double sumaPamieciMB = 0.0;
 
-    pokazPostep(konf.pokazPostep == 1, wykonanePliki, laczniePlikow, "Testowanie macierzy");
+    pokazPostep(czyPokazacPostep, wykonanePliki, laczniePlikow, "Testowanie macierzy");
 
     for (const auto& wpis : fs::directory_iterator(katalog)) {
         if (!wpis.is_regular_file()) {
@@ -66,7 +75,7 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
         if (macierz.rozmiar == 0) {
             cerr << "Wystapil blad: nie udalo sie wczytac macierzy z: " << sciezkaPliku.string() << "\n";
             wykonanePliki++;
-            pokazPostep(konf.pokazPostep == 1, wykonanePliki, laczniePlikow, "Testowanie macierzy");
+            pokazPostep(czyPokazacPostep, wykonanePliki, laczniePlikow, "Testowanie macierzy");
             continue;
         }
 
@@ -74,38 +83,47 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
 
         int poczatkoweUB = wyznaczPoczatkoweUB(macierz);
 
-        int wynik = -1;
+        WynikBnB wynikBnB{-1, 0};
         double czasMs = 0.0;
 
         if (konf.algorytm == 0) {
             Stoper stoper;
             stoper.start();
-            wynik = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
+            wynikBnB = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
             stoper.stop();
             czasMs = stoper.pobierzCzasMs();
         } else if (konf.algorytm == 1) {
             Stoper stoper;
             stoper.start();
-            wynik = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
+            wynikBnB = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
             stoper.stop();
             czasMs = stoper.pobierzCzasMs();
         } else {
             Stoper stoper;
             stoper.start();
-            wynik = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
+            wynikBnB = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
             stoper.stop();
             czasMs = stoper.pobierzCzasMs();
         }
 
         wykonanePliki++;
-        pokazPostep(konf.pokazPostep == 1, wykonanePliki, laczniePlikow, "Testowanie macierzy");
 
         sumaCzasow += czasMs;
+        sumaMaxWezlow += wynikBnB.maxWezlow;
+        sumaPamieciMB += obliczPamiecMB(wynikBnB.maxWezlow);
         iloscInstancji++;
 
+        if (czyPokazacPostep) {
+            cout << "\n";
+        }
+
         cout << "Macierz: " << sciezkaPliku.filename().string()
-             << " | koszt: " << wynik
-             << " | czas: " << fixed << setprecision(3) << czasMs << " ms\n";
+                         << " | koszt: " << wynikBnB.koszt
+                         << " | czas: " << fixed << setprecision(3) << czasMs << " ms"
+                         << " | max wezlow: " << wynikBnB.maxWezlow
+               << " | pamiec: " << fixed << setprecision(6) << obliczPamiecMB(wynikBnB.maxWezlow) << " MB\n";
+
+        pokazPostep(czyPokazacPostep, wykonanePliki, laczniePlikow, "Testowanie macierzy");
     }
 
     if (iloscInstancji == 0) {
@@ -114,6 +132,8 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
     }
 
     double sredniCzas = sumaCzasow / iloscInstancji;
+    double sredniaWezlow = static_cast<double>(sumaMaxWezlow) / static_cast<double>(iloscInstancji);
+    double sredniaPamiecMB = sumaPamieciMB / static_cast<double>(iloscInstancji);
 
     fs::create_directories("wyniki");
     string sciezkaCsv = "wyniki/wyniki_testy_generowane_macierze.csv";
@@ -126,15 +146,17 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
     }
 
     if (nowyPlik) {
-        plikCsv << "Rozmiar;Algorytm;Typ_UB;LiczbaInstancji;SredniCzas_ms\n";
+        plikCsv << "Rozmiar;Algorytm;Typ_UB;LiczbaInstancji;SredniCzas_ms;Srednia_Max_Wezlow;Srednia_Pamiec_MB\n";
     }
 
-    plikCsv << fixed << setprecision(3)
+        plikCsv << fixed << setprecision(3)
             << rozmiarInstancji << ";"
             << nazwaAlgorytmu << ";"
             << typUB << ";"
             << iloscInstancji << ";"
-            << sredniCzas << "\n";
+            << sredniCzas << ";"
+            << sredniaWezlow << ";"
+            << setprecision(6) << sredniaPamiecMB << "\n";
 
     cout << "\n=== Podsumowanie testu ===\n";
     cout << "Rozmiar: " << rozmiarInstancji << "\n";
@@ -142,5 +164,7 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
     cout << "Typ UB: " << typUB << "\n";
     cout << "Liczba instancji: " << iloscInstancji << "\n";
     cout << "Sredni czas: " << fixed << setprecision(3) << sredniCzas << " ms\n";
+    cout << "Srednia Max Wezlow: " << fixed << setprecision(3) << sredniaWezlow << "\n";
+    cout << "Srednia pamiec: " << fixed << setprecision(6) << sredniaPamiecMB << " MB\n";
     cout << "Wynik dopisano do: " << sciezkaCsv << "\n";
 }

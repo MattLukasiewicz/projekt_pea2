@@ -16,7 +16,6 @@ Macierz Wczytywanie_Macierzy::wczytajMacierz(const string& nazwaPliku) {
     string pierwszeSlowo;
     plik >> pierwszeSlowo;
 
-    // Klasyczny format
     if (isdigit(pierwszeSlowo[0]) || (pierwszeSlowo[0] == '-' && pierwszeSlowo.size() > 1)) {
         int n = stoi(pierwszeSlowo);
         Macierz mat(n);
@@ -40,7 +39,6 @@ Macierz Wczytywanie_Macierzy::wczytajMacierz(const string& nazwaPliku) {
         return mat;
     }
     else {
-        // Format TSPLIB
         plik.clear();
         plik.seekg(0);
 

@@ -5,22 +5,26 @@
 
 using namespace std;
 
-int rozwiazAlgorytm_BnB_DFS(const Macierz& macierz, int poczatkoweUB) {
+WynikBnB rozwiazAlgorytm_BnB_DFS(const Macierz& macierz, int poczatkoweUB) {
 
     int n = macierz.rozmiar;
     int gorneOgraniczenie = poczatkoweUB;
+    size_t maxWezlow = 0;
 
     Macierz macierzKorzenia = macierz;
     int kosztKorzenia = macierzKorzenia.redukuj(); 
     vector<int> sciezkaKorzenia = {0};
     
     Wezel korzen(macierzKorzenia, kosztKorzenia, 0, 1, sciezkaKorzenia);
-    
-    // Zamiast kolejki, uzywamy stosu
+
     stack<Wezel> stos;
     stos.push(korzen);
 
     while (!stos.empty()) {
+        if (stos.size() > maxWezlow) {
+            maxWezlow = stos.size();
+        }
+
         Wezel obecny = stos.top();
         stos.pop();
 
@@ -57,5 +61,5 @@ int rozwiazAlgorytm_BnB_DFS(const Macierz& macierz, int poczatkoweUB) {
         }
     }
 
-    return gorneOgraniczenie;
+    return {gorneOgraniczenie, maxWezlow};
 }

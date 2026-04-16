@@ -5,17 +5,17 @@
 
 using namespace std;
 
-// Komparator dla kolejki priorytetowej
 struct PorownajKoszty {
     bool operator()(const Wezel& a, const Wezel& b) const {
         return a.koszt > b.koszt;
     }
 };
 
-int rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB) {
+WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB) {
 
     int n = macierz.rozmiar;
     int gorneOgraniczenie = poczatkoweUB;
+    size_t maxWezlow = 0;
 
     Macierz macierzKorzenia = macierz;
     int kosztKorzenia = macierzKorzenia.redukuj(); 
@@ -27,6 +27,10 @@ int rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB) {
     kolejkaPriorytetowa.push(korzen);
 
     while (!kolejkaPriorytetowa.empty()) {
+        if (kolejkaPriorytetowa.size() > maxWezlow) {
+            maxWezlow = kolejkaPriorytetowa.size();
+        }
+
         Wezel obecny = kolejkaPriorytetowa.top();
         kolejkaPriorytetowa.pop();
 
@@ -65,5 +69,5 @@ int rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB) {
         }
     }
 
-    return gorneOgraniczenie;
+    return {gorneOgraniczenie, maxWezlow};
 }

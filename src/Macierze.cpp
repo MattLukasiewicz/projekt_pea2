@@ -18,7 +18,6 @@ void Macierz::wypisz() const {
 int Macierz::redukuj() {
     int kosztRedukcji = 0;
 
-    // 1. Redukcja wierszy
     for (int i = 0; i < rozmiar; ++i) {
         int minWiersza = INF;
         for (int j = 0; j < rozmiar; ++j) {
@@ -36,7 +35,6 @@ int Macierz::redukuj() {
         }
     }
 
-    // 2. Redukcja kolumn
     for (int j = 0; j < rozmiar; ++j) {
         int minKolumny = INF;
         for (int i = 0; i < rozmiar; ++i) {

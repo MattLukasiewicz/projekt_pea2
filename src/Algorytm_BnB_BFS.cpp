@@ -5,12 +5,12 @@
 
 using namespace std;
 
-int rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int poczatkoweUB) {
+WynikBnB rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int poczatkoweUB) {
 
     int n = macierz.rozmiar;
     int gorneOgraniczenie = poczatkoweUB;
+    size_t maxWezlow = 0;
 
-    // Przygotowanie korzenia (root)
     Macierz macierzKorzenia = macierz;
     int kosztKorzenia = macierzKorzenia.redukuj(); 
     vector<int> sciezkaKorzenia = {0};
@@ -21,6 +21,10 @@ int rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int poczatkoweUB) {
     kolejka.push(korzen);
 
     while (!kolejka.empty()) {
+        if (kolejka.size() > maxWezlow) {
+            maxWezlow = kolejka.size();
+        }
+
         Wezel obecny = kolejka.front();
         kolejka.pop();
 
@@ -57,5 +61,5 @@ int rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int poczatkoweUB) {
         }
     }
 
-    return gorneOgraniczenie;
+    return {gorneOgraniczenie, maxWezlow};
 }
