@@ -5,7 +5,7 @@
 using namespace std;
 
 Konfiguracja Wczytywanie_Konfiguracji::wczytajKonfiguracje(const string& nazwaPliku) {
-    Konfiguracja konf = {0, 0, "", 0, 0, 0, 1, "dane/generowane/", 0, 5, 20, 20, 1, 1000};
+    Konfiguracja konf{};
     ifstream plik(nazwaPliku);
     if (!plik.is_open()) {
         cerr << "Wystapil blad: wczytywanie pliku konfiguracyjnego: " << nazwaPliku << "\n";

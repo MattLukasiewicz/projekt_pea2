@@ -15,5 +15,5 @@ public:
     Macierz(int n);
 
     void wypisz() const;
-    int redukuj(); // Odejmuje minima i zwraca koszt redukcji
+    int redukuj();
 };

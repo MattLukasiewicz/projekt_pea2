@@ -21,12 +21,7 @@ static string pobierzNazweAlgorytmu(int algorytm) {
     }
 }
 
-static double obliczPamiecMB(size_t maxWezlow) {
-    const double bajtyNaMB = 1024.0 * 1024.0;
-    return (static_cast<double>(maxWezlow) * static_cast<double>(sizeof(Wezel))) / bajtyNaMB;
-}
-
-static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInstancji, int rozmiar, int wynik, double czasMs, size_t maxWezlow, double pamiecMB) {
+static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInstancji, int rozmiar, int wynik, double czasMs, double szacowanaPamiecMB) {
     fs::create_directories("wyniki");
 
     string sciezkaPliku = "wyniki/Wyniki_pojedyncze.csv";
@@ -39,7 +34,7 @@ static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInst
     }
 
     if (nowyPlik) {
-        plik << "Plik;Rozmiar;Algorytm;Wynik;Czas_ms;Max_Wezlow;Pamiec_MB\n";
+        plik << "Plik;Rozmiar;Algorytm;Wynik;Czas_ms;Szacowana_Pamiec_MB\n";
     }
 
     string nazwaPliku = fs::path(sciezkaInstancji).filename().string();
@@ -47,14 +42,13 @@ static void zapiszWynikDoCsv(const Konfiguracja& konf, const string& sciezkaInst
         nazwaPliku = sciezkaInstancji;
     }
 
-    plik << fixed << setprecision(3)
+        plik << fixed << setprecision(4)
          << nazwaPliku << ";"
          << rozmiar << ";"
          << pobierzNazweAlgorytmu(konf.algorytm) << ";"
          << wynik << ";"
             << czasMs << ";"
-            << maxWezlow << ";"
-         << setprecision(6) << pamiecMB << "\n";
+            << szacowanaPamiecMB << "\n";
 }
 
 bool wykonajTestPojedynczy(const Konfiguracja& konf) {
@@ -63,6 +57,9 @@ bool wykonajTestPojedynczy(const Konfiguracja& konf) {
         cerr << "Wystapil blad: nie udalo sie wczytac macierzy z: " << konf.sciezka << "\n";
         return false;
     }
+
+    Stoper stoper;
+    stoper.start();
 
     int poczatkoweUB = INF;
     if (konf.uzyjUB == 1) {
@@ -74,38 +71,34 @@ bool wykonajTestPojedynczy(const Konfiguracja& konf) {
     }
 
     WynikBnB wynikBnB{-1, 0};
-    double czasMs = 0.0;
 
     if (konf.algorytm == 0) {
-        Stoper stoper;
-        stoper.start();
         wynikBnB = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
-        stoper.stop();
-        czasMs = stoper.pobierzCzasMs();
     } else if (konf.algorytm == 1) {
-        Stoper stoper;
-        stoper.start();
         wynikBnB = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
-        stoper.stop();
-        czasMs = stoper.pobierzCzasMs();
     } else if (konf.algorytm == 2) {
-        Stoper stoper;
-        stoper.start();
         wynikBnB = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
-        stoper.stop();
-        czasMs = stoper.pobierzCzasMs();
     } else {
+        stoper.stop();
         cerr << "Wystapil blad: nieznany algorytm!\n";
         return false;
     }
 
-    cout << "Minimalny koszt: " << wynikBnB.koszt << "\n";
-    cout << "Czas obliczen: " << czasMs << " ms\n";
-    double pamiecMB = obliczPamiecMB(wynikBnB.maxWezlow);
-    cout << "Max wezlow w kontenerze: " << wynikBnB.maxWezlow << "\n";
-    cout << "Szacowana pamiec kontenera: " << fixed << setprecision(6) << pamiecMB << " MB\n";
+    stoper.stop();
+    double czasMs = stoper.pobierzCzasMs();
 
-    zapiszWynikDoCsv(konf, konf.sciezka, macierz.rozmiar, wynikBnB.koszt, czasMs, wynikBnB.maxWezlow, pamiecMB);
+    int N = macierz.rozmiar;
+    size_t rozmiarWezlaBajty = sizeof(WynikBnB)
+        + (static_cast<size_t>(N) * static_cast<size_t>(N) * sizeof(int))
+        + (static_cast<size_t>(N) * sizeof(int));
+    double szacowanaPamiecMB = (static_cast<double>(wynikBnB.maxWezlow) * static_cast<double>(rozmiarWezlaBajty))
+        / (1024.0 * 1024.0);
+
+    cout << "Minimalny koszt: " << wynikBnB.koszt << "\n";
+    cout << "Czas obliczen: " << fixed << setprecision(4) << czasMs << " ms\n";
+    cout << "Szacowana pamiec kontenera: " << fixed << setprecision(4) << szacowanaPamiecMB << " MB\n";
+
+    zapiszWynikDoCsv(konf, konf.sciezka, macierz.rozmiar, wynikBnB.koszt, czasMs, szacowanaPamiecMB);
 
     return true;
 }
