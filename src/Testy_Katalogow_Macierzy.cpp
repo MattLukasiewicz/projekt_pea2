@@ -54,7 +54,7 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
 
     double sumaCzasow = 0.0;
     int iloscInstancji = 0;
-    int rozmiarInstancji = konf.rozmiarN;
+    int rozmiarInstancji = 0;
     double sumaSzacowanejPamieciMB = 0.0;
 
     pokazPostep(czyPokazacPostep, wykonanePliki, laczniePlikow, "Testowanie macierzy");

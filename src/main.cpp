@@ -38,11 +38,6 @@ int main() {
             uruchomTestyDlaKatalogu(konf);
             break;
         }
-        case 2: {
-            cout << "TRYB 2: Pliki formatu TSPLIB.\n";
-            wykonajTestPojedynczy(konf);
-            break;
-        }
         case 3: {
             cout << "TRYB 3: Generowanie macierzy testowych.\n";
             generujWszystkieMacierze(konf);

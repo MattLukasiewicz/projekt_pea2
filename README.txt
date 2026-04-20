@@ -26,7 +26,6 @@ Ustawienia techniczne projektu:
 - TRYB:
   - 0 = pojedyncza macierz
   - 1 = test katalogu
-  - 2 = tryb pliku TSPLIB
   - 3 = generator (ponizej nie uzywamy)
 - ALGORYTM:
   - 0 = BFS
@@ -37,7 +36,7 @@ Ustawienia techniczne projektu:
   - 1 = NN
   - 2 = RNN
 - SCIEZKA_DANYCH = plik lub katalog wejscia
-- ROZMIAR_N, POWTORZENIA, POKAZ_POSTEP = parametry pomocnicze testow
+- POKAZ_POSTEP = pokazuje pasek postepu dla testu katalogowego (TRYB=1)
 
 ## Gotowe konfiguracje do wklejenia
 
@@ -47,8 +46,6 @@ TRYB=0
 ALGORYTM=0
 SCIEZKA_DANYCH=dane/macierze_testowe/matrix_6x6.atsp
 UZYJ_UB=1
-ROZMIAR_N=6
-POWTORZENIA=1
 POKAZ_POSTEP=0
 
 OPCJA B - TRYB 0, DFS, UB z RNN
@@ -57,8 +54,6 @@ TRYB=0
 ALGORYTM=1
 SCIEZKA_DANYCH=dane/macierze_testowe/matrix_8x8.atsp
 UZYJ_UB=2
-ROZMIAR_N=8
-POWTORZENIA=1
 POKAZ_POSTEP=0
 
 OPCJA C - TRYB 0, BestFirst, bez UB
@@ -67,8 +62,6 @@ TRYB=0
 ALGORYTM=2
 SCIEZKA_DANYCH=dane/macierze_testowe/matrix_11x11.atsp
 UZYJ_UB=0
-ROZMIAR_N=11
-POWTORZENIA=1
 POKAZ_POSTEP=0
 
 OPCJA D - TRYB 1, katalog testowy, BestFirst, UB z NN
@@ -77,16 +70,4 @@ TRYB=1
 ALGORYTM=2
 SCIEZKA_DANYCH=dane/macierze_testowe
 UZYJ_UB=1
-ROZMIAR_N=0
-POWTORZENIA=1
 POKAZ_POSTEP=1
-
-OPCJA E - TRYB 2, pojedynczy plik w trybie TSPLIB, BFS
-
-TRYB=2
-ALGORYTM=0
-SCIEZKA_DANYCH=dane/macierze_testowe/matrix_11x11.atsp
-UZYJ_UB=0
-ROZMIAR_N=11
-POWTORZENIA=1
-POKAZ_POSTEP=0

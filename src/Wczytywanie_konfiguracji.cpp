@@ -24,8 +24,6 @@ Konfiguracja Wczytywanie_Konfiguracji::wczytajKonfiguracje(const string& nazwaPl
             else if (klucz == "ALGORYTM") konf.algorytm = stoi(wartosc);
             else if (klucz == "SCIEZKA_DANYCH") konf.sciezka = wartosc;
             else if (klucz == "UZYJ_UB") konf.uzyjUB = stoi(wartosc);
-            else if (klucz == "ROZMIAR_N") konf.rozmiarN = stoi(wartosc);
-            else if (klucz == "POWTORZENIA") konf.powtorzenia = stoi(wartosc);
             else if (klucz == "POKAZ_POSTEP") konf.pokazPostep = stoi(wartosc);
             else if (klucz == "GEN_KATALOG_WYJSCIOWY") konf.genFolderDanych = wartosc;
             else if (klucz == "GEN_TYP") konf.genTyp = stoi(wartosc);

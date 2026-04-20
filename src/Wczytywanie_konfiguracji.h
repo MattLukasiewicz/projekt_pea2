@@ -6,8 +6,6 @@ struct Konfiguracja {
     int algorytm;
     std::string sciezka;
     int uzyjUB;
-    int rozmiarN;
-    int powtorzenia;
     int pokazPostep;
 
     std::string genFolderDanych;
