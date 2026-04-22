@@ -1,6 +1,4 @@
 #Opis
-
-To jest projekt w C++, ktory rozwiazuje TSP/ATSP algorytmami Branch and Bound.
 W projekcie sa 3 warianty BnB: BFS, DFS i BestFirst.
 Program moze korzystac z poczatkowego UB (NN albo RNN), a wyniki zapisuje do CSV.
 
@@ -9,17 +7,6 @@ Ustawienia techniczne projektu:
 - kompilator: g++
 - flagi kompilacji: -O2 -Wall -Wextra
 - pliki zrodlowe: src/*.cpp
-
-## Jak uruchomic
-
-1. Wklej jeden z gotowych wariantow config do pliku config.txt.
-2. Uruchom program:
-   - .\pea2.exe
-   lub
-   - .\bin\pea2.exe
-3. Odczytaj wyniki:
-   - wyniki/Wyniki_pojedyncze.csv
-   - wyniki/wyniki_testy_generowane_macierze.csv
 
 ## Wyjasnienie parametrow config
 

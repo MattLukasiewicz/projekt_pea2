@@ -39,7 +39,7 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
     else if (konf.uzyjUB == 1) typUB = "NN";
     else if (konf.uzyjUB == 2) typUB = "RNN";
 
-    auto wyznaczPoczatkoweUB = [&](const Macierz& macierz) {
+    auto wyznaczUb0 = [&](const Macierz& macierz) {
         if (konf.uzyjUB == 1) return algorytm_nn(macierz);
         if (konf.uzyjUB == 2) return algorytm_rnn(macierz);
         return INF;
@@ -79,14 +79,14 @@ void uruchomTestyDlaKatalogu(const Konfiguracja& konf) {
         Stoper stoper;
         stoper.start();
 
-        int poczatkoweUB = wyznaczPoczatkoweUB(macierz);
+        int ub0 = wyznaczUb0(macierz);
 
         if (konf.algorytm == 0) {
-            wynikBnB = rozwiazAlgorytm_BnB_BFS(macierz, poczatkoweUB);
+            wynikBnB = rozwiazAlgorytm_BnB_BFS(macierz, ub0);
         } else if (konf.algorytm == 1) {
-            wynikBnB = rozwiazAlgorytm_BnB_DFS(macierz, poczatkoweUB);
+            wynikBnB = rozwiazAlgorytm_BnB_DFS(macierz, ub0);
         } else {
-            wynikBnB = rozwiazAlgorytm_BnB_BestFirst(macierz, poczatkoweUB);
+            wynikBnB = rozwiazAlgorytm_BnB_BestFirst(macierz, ub0);
         }
 
         stoper.stop();

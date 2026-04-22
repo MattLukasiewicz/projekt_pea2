@@ -11,10 +11,10 @@ struct PorownajKoszty {
     }
 };
 
-WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB) {
+WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int ub0) {
 
     int n = macierz.rozmiar;
-    int gorneOgraniczenie = poczatkoweUB;
+    int ub = ub0;
     size_t maxWezlow = 0;
 
     Macierz macierzKorzenia = macierz;
@@ -34,7 +34,7 @@ WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB)
         Wezel obecny = kolejkaPriorytetowa.top();
         kolejkaPriorytetowa.pop();
 
-        if (obecny.koszt >= gorneOgraniczenie) {
+        if (obecny.koszt >= ub) {
             continue; 
         }
 
@@ -58,16 +58,16 @@ WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB)
                 Wezel potomek(macierzPotomka, kosztPotomka, i, obecny.poziom + 1, sciezkaPotomka);
 
                 if (potomek.poziom == n) {
-                    if (potomek.koszt < gorneOgraniczenie) {
-                        gorneOgraniczenie = potomek.koszt;
+                    if (potomek.koszt < ub) {
+                        ub = potomek.koszt;
                     }
                 } 
-                else if (potomek.koszt < gorneOgraniczenie) {
+                else if (potomek.koszt < ub) {
                     kolejkaPriorytetowa.push(potomek);
                 }
             }
         }
     }
 
-    return {gorneOgraniczenie, maxWezlow};
+    return {ub, maxWezlow};
 }

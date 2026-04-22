@@ -1,7 +1,7 @@
 TRYB=0
-ALGORYTM=0
-SCIEZKA_DANYCH=dane/generowane/atsp/15/macierz_15x15_1.txt
-UZYJ_UB=0
-ROZMIAR_N=15
-POWTORZENIA=1
+ALGORYTM=1
+SCIEZKA_DANYCH=dane/generowane/atsp/12/macierz_12x12_1.txt
+UZYJ_UB=2
+POKAZ_POSTEP=0
+
 

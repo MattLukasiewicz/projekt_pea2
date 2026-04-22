@@ -19,6 +19,6 @@ struct WynikBnB {
     size_t maxWezlow;
 };
 
-WynikBnB rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int poczatkoweUB);
-WynikBnB rozwiazAlgorytm_BnB_DFS(const Macierz& macierz, int poczatkoweUB);
-WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int poczatkoweUB);
+WynikBnB rozwiazAlgorytm_BnB_BFS(const Macierz& macierz, int ub0);
+WynikBnB rozwiazAlgorytm_BnB_DFS(const Macierz& macierz, int ub0);
+WynikBnB rozwiazAlgorytm_BnB_BestFirst(const Macierz& macierz, int ub0);
